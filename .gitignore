@@ -3,76 +3,83 @@
 # -----------------------------------------------------------------------
 
 # ==== Backend Laravel ==================================================
-backend/backend/vendor/
-backend/backend/node_modules/
+backend/vendor/
+backend/node_modules/
 
 # Environnements (secrets — a definir manuellement sur chaque instance)
-backend/backend/.env
-backend/backend/.env.backup
-backend/backend/.env.production
-!backend/backend/.env.example
+backend/.env
+backend/.env.backup
+backend/.env.production
+!backend/.env.example
 
 # Storage — donnees runtime, jamais versionnees
-backend/backend/storage/*.key
-backend/backend/storage/app/*
-!backend/backend/storage/app/.gitignore
-!backend/backend/storage/app/public/
-backend/backend/storage/app/public/*
-!backend/backend/storage/app/public/.gitignore
-backend/backend/storage/framework/cache/*
-!backend/backend/storage/framework/cache/.gitignore
-backend/backend/storage/framework/sessions/*
-!backend/backend/storage/framework/sessions/.gitignore
-backend/backend/storage/framework/views/*
-!backend/backend/storage/framework/views/.gitignore
-backend/backend/storage/logs/*
-!backend/backend/storage/logs/.gitignore
-backend/backend/storage/workers-logs/
-backend/backend/storage/debugbar/
+backend/storage/*.key
+backend/storage/app/*
+!backend/storage/app/.gitignore
+!backend/storage/app/public/
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitignore
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/framework/dump.txt
+backend/storage/workers-logs/
+backend/storage/debugbar/
 
 # Bootstrap cache (regenere par Laravel)
-backend/backend/bootstrap/cache/*.php
-!backend/backend/bootstrap/cache/.gitignore
+backend/bootstrap/cache/*.php
+!backend/bootstrap/cache/.gitignore
 
 # Symlinks generes
-backend/backend/public/storage
-backend/backend/public/hot
+backend/public/storage
+backend/public/hot
+backend/public/build/
 
 # Fichiers PhpUnit / Cover
-backend/backend/coverage/
-backend/backend/.phpunit.cache/
-backend/backend/.phpunit.result.cache
+backend/coverage/
+backend/.phpunit.cache/
+backend/.phpunit.result.cache
 
 # Scripts one-shot de debug/repair (ne pas versionner)
-backend/backend/fix_*.php
-backend/backend/verif_*.php
-backend/backend/check_*.php
-backend/backend/test_*.php
-backend/backend/explore_*.php
-backend/backend/backfill_*.php
-backend/backend/retry_*.php
-backend/backend/monitor.php
-backend/backend/gen_cahier_*.php
-backend/backend/read_doc.php
-backend/backend/preview_titles.php
-backend/backend/count_templates.php
-backend/backend/analyse_4_result.php
-backend/backend/rename_manage_perms.ps1
-backend/backend/revert_items_perm.ps1
+backend/fix_*.php
+backend/verif_*.php
+backend/check_*.php
+backend/check-*.php
+backend/test_*.php
+backend/explore_*.php
+backend/backfill_*.php
+backend/retry_*.php
+backend/monitor.php
+backend/gen_cahier_*.php
+backend/read_doc.php
+backend/preview_titles.php
+backend/count_templates.php
+backend/analyse_4_result.php
+backend/rename_manage_perms.ps1
+backend/revert_items_perm.ps1
+backend/debug-*.ps1
+backend/test-*.ps1
+backend/test-api.sh
 
 # ==== Frontend React / Vite ============================================
-frontend/frontend/node_modules/
-frontend/frontend/dist/
-frontend/frontend/dist-ssr/
-frontend/frontend/.vite/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
 
 # Environnements front
-frontend/frontend/.env
-frontend/frontend/.env.local
-frontend/frontend/.env.production.local
-frontend/frontend/.env.development.local
-!frontend/frontend/.env.example
-!frontend/frontend/.env.production
+frontend/.env
+frontend/.env.local
+frontend/.env.production.local
+frontend/.env.development.local
+!frontend/.env.example
+# .env.production ne contient que des URLs publiques (VITE_*) : versionne
+!frontend/.env.production
 
 # ==== IDE / Editeurs ===================================================
 .vscode/
@@ -82,6 +89,10 @@ frontend/frontend/.env.development.local
 *~
 .project
 .settings/
+
+# ==== Outillage local ==================================================
+.git.backup/
+.claude/
 
 # ==== OS ==============================================================
 .DS_Store
