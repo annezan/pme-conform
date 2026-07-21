@@ -1,0 +1,54 @@
+### Tests API DCP
+@baseUrl = http://localhost:8000/api
+
+### 1. Authentification
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+
+> {% client.global.authToken = response.data.token %}
+
+###
+
+### 2. Lister les secteurs d'activité
+GET {{baseUrl}}/secteurs-activite
+Authorization: Bearer {{authToken}}
+
+###
+
+### 3. Lister les clients
+GET {{baseUrl}}/clients
+Authorization: Bearer {{authToken}}
+
+###
+
+### 4. Lister les missions
+GET {{baseUrl}}/missions
+Authorization: Bearer {{authToken}}
+
+###
+
+### 5. Health check
+GET {{baseUrl}}/health/ping
+
+###
+
+### 6. Lister les agents IA
+GET {{baseUrl}}/agents
+Authorization: Bearer {{authToken}}
+
+###
+
+### 7. Créer un secteur d'activité
+POST {{baseUrl}}/secteurs-activite
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "nom": "Technologie",
+  "description": "Entreprises du secteur technologique"
+}

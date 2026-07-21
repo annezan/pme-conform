@@ -1,0 +1,37 @@
+Analyse l’intégralité du code source du projet **ProjetDCP** et produis une documentation technique détaillée du fonctionnement global de l’application.
+
+Je veux une analyse approfondie qui couvre notamment :
+
+* l’architecture générale du projet ;
+* le rôle de chaque module, dossier, couche et composant ;
+* les technologies et frameworks utilisés ;
+* les dépendances principales et leurs interactions ;
+* le flux complet de traitement des données et des requêtes ;
+* le cycle de vie d’une action utilisateur, depuis le frontend jusqu’à la base de données puis le retour de la réponse ;
+* les mécanismes d’authentification, d’autorisation et de sécurité ;
+* les services, handlers, repositories, middlewares, contrôleurs, entités et modèles utilisés ;
+* les échanges entre les différentes couches (Frontend → API → Services → Base de données, etc.) ;
+* les workflows métier implémentés ;
+* les processus asynchrones, files d’attente, événements ou tâches planifiées s’il y en a ;
+* la structure de la base de données et les relations entre entités ;
+* les points d’entrée principaux de l’application ;
+* les fichiers clés et leur utilité ;
+* les bonnes pratiques et patterns architecturaux utilisés ;
+* les éventuels problèmes d’architecture, de performance, de maintenabilité ou de sécurité ;
+* des suggestions d’amélioration techniques et organisationnelles.
+
+Je veux également que tu reconstruises et expliques le **flux de travail complet du projet**, étape par étape, avec des exemples concrets de circulation des données entre les composants.
+
+L’objectif est que, à la fin de l’analyse, une personne qui ne connaît pas le projet puisse comprendre :
+
+* comment le système fonctionne de bout en bout ;
+* comment les modules communiquent entre eux ;
+* comment une fonctionnalité est exécutée techniquement ;
+* et comment reprendre ou faire évoluer le projet facilement.
+
+Si nécessaire, génère :
+
+* des schémas d’architecture ;
+* des diagrammes de flux ;
+* des diagrammes de séquence ;
+* et une cartographie des dépendances entre modules.

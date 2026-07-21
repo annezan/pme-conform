@@ -1,0 +1,117 @@
+# -----------------------------------------------------------------------
+# PME-CONFORM — .gitignore monorepo
+# -----------------------------------------------------------------------
+
+# ==== Backend Laravel ==================================================
+backend/backend/vendor/
+backend/backend/node_modules/
+
+# Environnements (secrets — a definir manuellement sur chaque instance)
+backend/backend/.env
+backend/backend/.env.backup
+backend/backend/.env.production
+!backend/backend/.env.example
+
+# Storage — donnees runtime, jamais versionnees
+backend/backend/storage/*.key
+backend/backend/storage/app/*
+!backend/backend/storage/app/.gitignore
+!backend/backend/storage/app/public/
+backend/backend/storage/app/public/*
+!backend/backend/storage/app/public/.gitignore
+backend/backend/storage/framework/cache/*
+!backend/backend/storage/framework/cache/.gitignore
+backend/backend/storage/framework/sessions/*
+!backend/backend/storage/framework/sessions/.gitignore
+backend/backend/storage/framework/views/*
+!backend/backend/storage/framework/views/.gitignore
+backend/backend/storage/logs/*
+!backend/backend/storage/logs/.gitignore
+backend/backend/storage/workers-logs/
+backend/backend/storage/debugbar/
+
+# Bootstrap cache (regenere par Laravel)
+backend/backend/bootstrap/cache/*.php
+!backend/backend/bootstrap/cache/.gitignore
+
+# Symlinks generes
+backend/backend/public/storage
+backend/backend/public/hot
+
+# Fichiers PhpUnit / Cover
+backend/backend/coverage/
+backend/backend/.phpunit.cache/
+backend/backend/.phpunit.result.cache
+
+# Scripts one-shot de debug/repair (ne pas versionner)
+backend/backend/fix_*.php
+backend/backend/verif_*.php
+backend/backend/check_*.php
+backend/backend/test_*.php
+backend/backend/explore_*.php
+backend/backend/backfill_*.php
+backend/backend/retry_*.php
+backend/backend/monitor.php
+backend/backend/gen_cahier_*.php
+backend/backend/read_doc.php
+backend/backend/preview_titles.php
+backend/backend/count_templates.php
+backend/backend/analyse_4_result.php
+backend/backend/rename_manage_perms.ps1
+backend/backend/revert_items_perm.ps1
+
+# ==== Frontend React / Vite ============================================
+frontend/frontend/node_modules/
+frontend/frontend/dist/
+frontend/frontend/dist-ssr/
+frontend/frontend/.vite/
+
+# Environnements front
+frontend/frontend/.env
+frontend/frontend/.env.local
+frontend/frontend/.env.production.local
+frontend/frontend/.env.development.local
+!frontend/frontend/.env.example
+!frontend/frontend/.env.production
+
+# ==== IDE / Editeurs ===================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ==== OS ==============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
+
+# ==== Documents temporaires / generes ==================================
+*.docx.tmp
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# Cahier des charges genere : versionne pour la reference
+!Cahier-des-Charges-PME-CONFORM.docx
+!Fiche-Configuration-Serveur-PME-CONFORM.docx
+
+# ==== Archives / sauvegardes locales (ne JAMAIS versionner) ============
+# Trop lourdes pour Git, souvent des snapshots de zip/rar de securite locale.
+*.rar
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+
+# ==== Divers ==========================================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

@@ -1,0 +1,98 @@
+﻿=== Fiche T1 : structure detaillee ===
+L1 : Nom et Prénom , Photographie ,
+L3 : Nom et Prénom:direct , Photographie:direct ,
+L4 : Enrôlement des Acteur Agricoles sur le terrain (eAgri) || nj8tdzhllyk
+L6 : DESCRIPTION DE LA FINALITE
+L8 : Date de création de la fiche
+L10 : Date de mise à jour de la fiche
+L12 : Service(s) chargé(s) de la mise en œuvre des t || Pôle MARKETING || Source(s)
+L20 : Catégorie de support || Type || Marque / Version
+L21 : Matériels || Ordinateur Portable
+L22 : Ordinateur Fixe
+L23 : Tablette
+L24 : Téléphone
+L25 : Autres
+L26 : Logiciel || Logiciel Métier
+L27 : Logiciel Bureautique
+L28 : Application
+L29 : Autres (Précisez)
+L30 : Papier || Registre
+L31 : Papier (simple)
+L32 : Papier (Préimprimé)
+L33 : Autres (Précisez)
+L34 : Autres (Précisez)
+L37 : TRAITEMENT || BASE LEGALE
+L39 : Création, copie, Enregistrement || Consentement
+L51 : CATEGORIE DE PERSONNES CONCERNEES || Agriculteurs, Aquaculteurs, Maraîchers || DOCUMENTATION(S)  SOURCE(S)
+L58 : CATEGORIE DE DONNEES  CONCERNEES
+L60 : Catégorie de données || Détail || Origine
+L61 : Direct || Indirect
+L62 : Etat-civil, Identité, Données d’identification || Nom et Prénom || =IF(ISNUMBER(FIND(CONCAT(B62,":","indirect"),AA3)),"x","")
+L63 : Age || =IF(ISNUMBER(FIND(B63,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B63,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B63,":","indirect"),AA3)),"x","")
+L64 : Date de naissance || =IF(ISNUMBER(FIND(B64,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B64,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B64,":","indirect"),AA3)),"x","")
+L65 : Lieu de naissance || =IF(ISNUMBER(FIND(B65,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B65,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B65,":","indirect"),AA3)),"x","")
+L66 : Genre (M/F) || =IF(ISNUMBER(FIND(B66,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B66,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B66,":","indirect"),AA3)),"x","")
+L67 : Adresse postale || =IF(ISNUMBER(FIND(B67,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B67,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B67,":","indirect"),AA3)),"x","")
+L68 : Adresse Fiscale || =IF(ISNUMBER(FIND(B68,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B68,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B68,":","indirect"),AA3)),"x","")
+L69 : Adresse mail || =IF(ISNUMBER(FIND(B69,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B69,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B69,":","indirect"),AA3)),"x","")
+L70 : Photographie || =IF(ISNUMBER(FIND(CONCAT(B70,":","indirect"),AA3)),"x","")
+L71 : Signature || =IF(ISNUMBER(FIND(B71,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B71,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B71,":","indirect"),AA3)),"x","")
+L72 : Nationalité || =IF(ISNUMBER(FIND(B72,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B72,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B72,":","indirect"),AA3)),"x","")
+L73 : Vie personnelle || Habitude de vie || =IF(ISNUMBER(FIND(B73,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B73,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B73,":","indirect"),AA3)),"x","")
+L74 : Situation familiale || =IF(ISNUMBER(FIND(B74,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B74,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B74,":","indirect"),AA3)),"x","")
+L75 : Nombre d'enfants || =IF(ISNUMBER(FIND(B75,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B75,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B75,":","indirect"),AA3)),"x","")
+L76 : Vie professionnelle || Date d'embauche || =IF(ISNUMBER(FIND(B76,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B76,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B76,":","indirect"),AA3)),"x","")
+L77 : Situation Professionnelle || =IF(ISNUMBER(FIND(B77,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B77,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B77,":","indirect"),AA3)),"x","")
+L78 : Curriculum Vitae (CV) || =IF(ISNUMBER(FIND(B78,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B78,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B78,":","indirect"),AA3)),"x","")
+L79 : Scolarite || =IF(ISNUMBER(FIND(B79,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B79,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B79,":","indirect"),AA3)),"x","")
+L80 : Formation Distinction || =IF(ISNUMBER(FIND(B80,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B80,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B80,":","indirect"),AA3)),"x","")
+L81 : Numéro matricule || =IF(ISNUMBER(FIND(B81,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B81,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B81,":","indirect"),AA3)),"x","")
+L82 : Informations d’ordre économique et financier || Revenus || =IF(ISNUMBER(FIND(B82,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B82,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B82,":","indirec...
+L83 : Salaire || =IF(ISNUMBER(FIND(B83,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B83,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B83,":","indirect"),AA3)),"x","")
+L84 : Situation financière || =IF(ISNUMBER(FIND(B84,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B84,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B84,":","indirect"),AA3)),"x","")
+L85 : Relevé d'identité bancaire (RIB) || =IF(ISNUMBER(FIND(B85,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B85,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B85,":","indirect"),AA3)),"x","")
+L86 : Données de connexion (Adresse IP, logs, etc.) || Identifiants des terminaux || =IF(ISNUMBER(FIND(B86,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B86,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CON...
+L87 : Identifiants de connexions || =IF(ISNUMBER(FIND(B87,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B87,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B87,":","indirect"),AA3)),"x","")
+L88 : Information d'horodatage || =IF(ISNUMBER(FIND(B88,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B88,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B88,":","indirect"),AA3)),"x","")
+L89 : Données de localisation (déplacements, données GPS, GSM, etc.) || Localisation par satellite || =IF(ISNUMBER(FIND(B89,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B89,":","direct"),AA3)),"x","") || =IF(...
+L90 : Localisation par whatsapp || =IF(ISNUMBER(FIND(B90,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B90,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B90,":","indirect"),AA3)),"x","")
+L91 : Localisation par téléphone mobile || =IF(ISNUMBER(FIND(B91,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B91,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B91,":","indirect"),AA3)),"x","")
+L92 : données GPS collectées de façon directe ou autre || =IF(ISNUMBER(FIND(B92,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B92,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B92,":","indirect"),AA3...
+L94 : Catégorie particulière de données || Détail || Origine
+L95 : Direct || Indirect
+L96 : Numéro national d'identification / (ou autre identifiant de la même nature) || Numéro téléphone || =IF(ISNUMBER(FIND(B96,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B96,":","direct"),AA3)),"x","") || =...
+L97 : Carte nationale d'identité (CNI) || =IF(ISNUMBER(FIND(B97,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B97,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B97,":","indirect"),AA3)),"x","")
+L98 : Passeport || =IF(ISNUMBER(FIND(B98,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B98,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B98,":","indirect"),AA3)),"x","")
+L99 : Titre de séjour || =IF(ISNUMBER(FIND(B99,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B99,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B99,":","indirect"),AA3)),"x","")
+L100 : Permis de conduire || =IF(ISNUMBER(FIND(B100,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B100,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B100,":","indirect"),AA3)),"x","")
+L101 : Numéro de sécurité sociale || =IF(ISNUMBER(FIND(B101,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B101,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B101,":","indirect"),AA3)),"x","")
+L102 : Numéro CMU || =IF(ISNUMBER(FIND(B102,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B102,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B102,":","indirect"),AA3)),"x","")
+L103 : Numéro extrait de naissance || =IF(ISNUMBER(FIND(B103,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B103,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B103,":","indirect"),AA3)),"x","")
+L104 : Données biométriques || Contour de la main || =IF(ISNUMBER(FIND(B104,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B104,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B104,":","indirect"),AA3)),...
+L105 : Empreintes digitales || =IF(ISNUMBER(FIND(B105,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B105,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B105,":","indirect"),AA3)),"x","")
+L106 : Reconnaissance vocale || =IF(ISNUMBER(FIND(B106,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B106,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B106,":","indirect"),AA3)),"x","")
+L107 : Reconnaissance faciale || =IF(ISNUMBER(FIND(B107,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B107,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B107,":","indirect"),AA3)),"x","")
+L108 : Iris de l'oeil || =IF(ISNUMBER(FIND(B108,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B108,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B108,":","indirect"),AA3)),"x","")
+L109 : Données de santé / (Données sensibles) || Pathologie || =IF(ISNUMBER(FIND(B109,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B109,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B109,":","indirec...
+L110 : Affection || =IF(ISNUMBER(FIND(B110,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B110,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B110,":","indirect"),AA3)),"x","")
+L111 : Antécédents familiaux || =IF(ISNUMBER(FIND(B111,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B111,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B111,":","indirect"),AA3)),"x","")
+L112 : Données relatives aux soins || =IF(ISNUMBER(FIND(B112,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B112,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B112,":","indirect"),AA3)),"x","")
+L113 : Autres données sensibles / (Données sensibles) || Origines raciales ou ethniques || =IF(ISNUMBER(FIND(B113,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B113,":","direct"),AA3)),"x","") || =IF(ISNUMBER(F...
+L114 : Opinion politiques || =IF(ISNUMBER(FIND(B114,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B114,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B114,":","indirect"),AA3)),"x","")
+L115 : Opinions religieuses || =IF(ISNUMBER(FIND(B115,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B115,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B115,":","indirect"),AA3)),"x","")
+L116 : Appartenance syndicale || =IF(ISNUMBER(FIND(B116,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B116,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B116,":","indirect"),AA10)),"x","")
+L117 : Vie sexuelle || =IF(ISNUMBER(FIND(B117,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B117,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B117,":","indirect"),AA3)),"x","")
+L118 : Infractions, condamnations, mesures de sûreté / (Données sensibles) || Infractions || =IF(ISNUMBER(FIND(B118,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B118,":","direct"),AA3)),"x","") || =IF(ISNUMBER...
+L119 : Condamnations || =IF(ISNUMBER(FIND(B119,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B119,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B119,":","indirect"),AA3)),"x","")
+L120 : Mesures de sureté || =IF(ISNUMBER(FIND(B120,AA1)),"ok","") || =IF(ISNUMBER(FIND(CONCAT(B120,":","direct"),AA3)),"x","") || =IF(ISNUMBER(FIND(CONCAT(B120,":","indirect"),AA3)),"x","")
+L121 : Appréciation sur les difficultés sociales des personnes / (Données sensibles) || Précisez : || =IF(ISNUMBER(FIND(B121,AA1)),"ok","")
+L124 : TRANSFERT DE DONNEES HORS CEDEAO
+L126 : Organe || Pays || Garantie || Sens-Groupe
+L127 : CONTABO || USA
+L136 : Contrôle d'accès des utilisateurs
+L149 : Mesures de traçabilité
+L162 : Mesures de protection des logiciels
+L175 : Sauvegarde des données
+L188 : Chiffrement des données
+L201 : Contrôle des sous-traitants
+L214 : Autres mesures :

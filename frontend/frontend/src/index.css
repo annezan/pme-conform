@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* Variables et overrides globaux */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f8fafc;
+}
+
+/* Scrollbar premium */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+/* SweetAlert2 overrides */
+.swal2-popup {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    border-radius: 16px !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.animate-slideIn {
+    animation: slideInRight 0.25s ease-out;
+}
+
+/* Orbes flottantes (page de login premium) */
+@keyframes pulseSlow {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.08); }
+}
+.animate-pulse-slow {
+    animation: pulseSlow 8s ease-in-out infinite;
+}
+
+/* Drawer cote gauche */
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slideInLeft {
+    animation: slideInLeft 0.25s ease-out;
+}
+
+/* React Data Table overrides */
+.rdt_Table {
+    border-radius: 0 !important;
+}
+.rdt_TableHead {
+    font-weight: 600 !important;
+}
+.rdt_TableHeadRow {
+    background-color: #f8fafc !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    min-height: 48px !important;
+}
+.rdt_TableRow {
+    min-height: 52px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+.rdt_TableRow:hover {
+    background-color: #f8fafc !important;
+}
+.rdt_Pagination {
+    border-top: 1px solid #e2e8f0 !important;
+    min-height: 52px !important;
+}
