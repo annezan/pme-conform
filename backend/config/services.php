@@ -77,6 +77,18 @@ return [
     ],
 
     /*
+    | Ghostscript — utilise par PdfExtractor pour convertir un PDF scanne
+    | (sans couche texte) en images avant de les passer a l'OCR Tesseract.
+    | Linux : apt install ghostscript (binaire "gs", laisser vide si dans le PATH).
+    | Windows : renseigner GHOSTSCRIPT_PATH vers gswin64c.exe.
+    | dpi : resolution de rendu des pages (300 = bon compromis qualite/vitesse OCR).
+    */
+    'ghostscript' => [
+        'path' => env('GHOSTSCRIPT_PATH', 'gs'),
+        'dpi' => (int) env('OCR_PDF_DPI', 300),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | AS Consulting — Coordonnees du portefeuille
     |--------------------------------------------------------------------------
