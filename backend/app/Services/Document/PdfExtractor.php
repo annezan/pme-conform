@@ -131,9 +131,12 @@ class PdfExtractor implements DocumentExtractorInterface
         $dpi = (int) config('services.ghostscript.dpi', 300);
         $sortie = $dossierTemp . DIRECTORY_SEPARATOR . 'page-%03d.png';
 
+        // escapeshellarg (et non escapeshellcmd) sur le binaire : sous Windows
+        // le chemin contient un espace ("C:/Program Files/...") qu'il faut
+        // proteger par des guillemets, sinon le shell coupe sur l'espace.
         $commande = sprintf(
             '%s -sDEVICE=png16m -r%d -dNOPAUSE -dBATCH -dQUIET -sOutputFile=%s %s',
-            escapeshellcmd($gs),
+            escapeshellarg($gs),
             $dpi,
             escapeshellarg($sortie),
             escapeshellarg($cheminFichier),
