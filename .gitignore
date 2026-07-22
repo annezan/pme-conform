@@ -68,7 +68,9 @@ backend/test-api.sh
 
 # ==== Frontend React / Vite ============================================
 frontend/node_modules/
-frontend/dist/
+# frontend/dist/ est volontairement VERSIONNE (option A) : le build est deploye
+# sur le serveur par un simple `git pull`, sans scp. Rebuild + commit a chaque
+# modif du front.
 frontend/dist-ssr/
 frontend/.vite/
 
