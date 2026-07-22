@@ -319,6 +319,13 @@ class ClientDocumentController extends Controller
      */
     private function verifierAcces($user, Document $document): void
     {
+        // Les ASC (view-portefeuille) accedent aux documents de tous les
+        // clients, comme dans index(). Sans ce court-circuit, un ASC (qui n'a
+        // aucun client rattache) recevait un 403 en ouvrant un document.
+        if ($user->hasPermissionTo('view-portefeuille')) {
+            return;
+        }
+
         $clientIds = $user->clients()->pluck('clients.id');
         $clientDoc = $document->client_id;
         if (! $clientDoc && $document->mission_id) {
