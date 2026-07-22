@@ -409,8 +409,28 @@ class ClientController extends Controller
 
     public function destroy(Client $client): JsonResponse
     {
-        $client->update(['deleted_by' => $request->user()->id]);
+        // auth()->id() : l'ancien code utilisait $request->user() alors que
+        // $request n'etait pas parametre de la methode (erreur fatale).
+        $client->update(['deleted_by' => auth()->id()]);
+
+        // Comptes rattaches a cette entreprise AVANT sa suppression.
+        $utilisateurs = $client->utilisateurs()->get();
+
         $client->delete();
+
+        // On supprime aussi les comptes de l'entreprise (symetrie avec la
+        // suppression d'un utilisateur). On epargne le compte connecte et tout
+        // compte encore rattache a une AUTRE entreprise active : la relation
+        // clients() exclut deja l'entreprise qu'on vient de soft-delete.
+        foreach ($utilisateurs as $utilisateur) {
+            if ($utilisateur->id === auth()->id()) {
+                continue;
+            }
+
+            if ($utilisateur->clients()->count() === 0) {
+                $utilisateur->delete();
+            }
+        }
 
         return response()->json(['message' => 'Client supprime.']);
     }

@@ -102,7 +102,22 @@ class AuthController extends Controller
         $data = $request->validate([
             // Entreprise
             'client' => ['required', 'array'],
-            'client.raison_sociale' => ['required', 'string', 'max:255'],
+            'client.raison_sociale' => [
+                'required', 'string', 'max:255',
+                // Interdit un nom d'entreprise deja utilise par un client actif,
+                // insensible a la casse et aux espaces ("yango" == " Yango ").
+                // Client::query() exclut deja les clients soft-deleted, donc un
+                // nom se libere si l'entreprise a ete supprimee.
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $existe = Client::whereRaw('LOWER(TRIM(raison_sociale)) = ?', [
+                        mb_strtolower(trim((string) $value)),
+                    ])->exists();
+
+                    if ($existe) {
+                        $fail('Une entreprise avec ce nom existe déjà.');
+                    }
+                },
+            ],
             'client.pays' => ['required', 'string', 'max:100'],
             'client.ville' => ['nullable', 'string', 'max:100'],
             'client.adresse' => ['nullable', 'string', 'max:500'],

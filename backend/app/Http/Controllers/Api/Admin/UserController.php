@@ -405,7 +405,20 @@ class UserController extends Controller
             return response()->json(['message' => 'Impossible de supprimer votre propre compte.'], 403);
         }
 
+        // Entreprises rattachees a cet utilisateur AVANT sa suppression.
+        $clients = $user->clients()->get();
+
         $user->delete();
+
+        // Si une entreprise se retrouve sans aucun compte actif (l'utilisateur
+        // supprime etait le dernier), on la supprime aussi (soft delete) pour ne
+        // pas laisser d'entreprise orpheline visible dans /clients.
+        // La relation utilisateurs() exclut deja les users soft-deleted.
+        foreach ($clients as $client) {
+            if ($client->utilisateurs()->count() === 0) {
+                $client->delete();
+            }
+        }
 
         return response()->json(['message' => 'Utilisateur supprime.']);
     }
