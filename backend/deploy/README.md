@@ -8,7 +8,7 @@ notifications) sur le serveur `ns3485498.ip-193-70-32.eu`.
 | Composant | Version | État |
 |---|---|---|
 | Ubuntu Server | 24.04 LTS | ✅ |
-| Nginx + PHP-FPM (PHP 8.2) | — | ✅ |
+| Nginx + PHP-FPM (PHP 8.3) | — | ✅ |
 | PostgreSQL + pgvector | 18.4 / 0.8.2 | ✅ |
 | Redis | 7.0.15 | ✅ |
 | **Supervisor** | **4.2.5** | **Installé, workers à configurer** |
@@ -17,12 +17,28 @@ notifications) sur le serveur `ns3485498.ip-193-70-32.eu`.
 
 ## Étape 1 — Déposer le code
 
+Le code est versionné sur GitHub : on clone le dépôt plutôt que de déposer
+un ZIP (les mises à jour se font ensuite par un simple `git pull`).
+
 ```bash
-# Via gestionnaire de fichiers HestiaCP, déposer le ZIP du backend dans
-# /home/asconsulting/web/ns3485498.ip-193-70-32.eu/laravel/
-# Puis :
-cd /home/asconsulting/web/ns3485498.ip-193-70-32.eu/laravel
+cd /home/asconsulting/web/ns3485498.ip-193-70-32.eu
+git clone https://github.com/annezan/pme-conform.git
+
+cd pme-conform/backend
 composer install --no-dev --optimize-autoloader
+```
+
+Le dépôt contient `backend/` (Laravel) et `frontend/` (React). La racine
+Laravel est donc `pme-conform/backend`, et le document root Nginx sera
+`pme-conform/backend/public`.
+
+### Mises à jour ultérieures
+
+```bash
+cd /home/asconsulting/web/ns3485498.ip-193-70-32.eu/pme-conform
+git pull
+cd backend && composer install --no-dev --optimize-autoloader
+php artisan migrate --force && php artisan config:cache && php artisan queue:restart
 ```
 
 ## Étape 2 — Configurer `.env`
@@ -76,10 +92,11 @@ sudo cp deploy/supervisor/pme-conform-worker.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread
 sudo supervisorctl update
 
-# Démarrer les 3 groupes de workers
+# Démarrer les 4 groupes de workers
 sudo supervisorctl start pme-conform-analyses:*
 sudo supervisorctl start pme-conform-default:*
 sudo supervisorctl start pme-conform-referentiels:*
+sudo supervisorctl start pme-conform-questionnaires:*
 
 # Vérifier
 sudo supervisorctl status
@@ -92,6 +109,7 @@ pme-conform-analyses:pme-conform-analyses_01    RUNNING   pid 12346, uptime 0:00
 pme-conform-default:pme-conform-default_00      RUNNING   pid 12347, uptime 0:00:05
 pme-conform-default:pme-conform-default_01      RUNNING   pid 12348, uptime 0:00:05
 pme-conform-referentiels:pme-conform-...        RUNNING   pid 12349, uptime 0:00:05
+pme-conform-questionnaires:pme-conform-...      RUNNING   pid 12350, uptime 0:00:05
 ```
 
 ## Configuration des workers
@@ -101,8 +119,9 @@ pme-conform-referentiels:pme-conform-...        RUNNING   pid 12349, uptime 0:00
 | `analyses` | **2** | 4h | Analyse enrichie IA (Ollama llama3.1:8b CPU, longue) |
 | `default` | **2** | 5min | Notifications, exports XLSX, jobs courts |
 | `referentiels` | **1** | 1h | Indexation d'un référentiel (chunks + embeddings + classification thématique LLM) |
+| `questionnaires` | **1** | 30min | Génération LLM des questionnaires DCP par pôle |
 
-Total : **5 process workers en parallèle**. Avec 62 Go de RAM et la limite memory=2048MB par worker, ça laisse largement la place à Ollama + Nginx + PostgreSQL.
+Total : **6 process workers en parallèle**. Avec 62 Go de RAM et la limite memory=2048MB par worker, ça laisse largement la place à Ollama + Nginx + PostgreSQL.
 
 ## Étape 5 — Front-end React
 
@@ -110,15 +129,30 @@ Total : **5 process workers en parallèle**. Avec 62 Go de RAM et la limite memo
 # Sur votre PC, à la racine de frontend/
 npm install
 npm run build
-# Copier le contenu de dist/ dans laravel/public/
-scp -r dist/* asconsulting@ns3485498.ip-193-70-32.eu:/home/asconsulting/web/ns3485498.ip-193-70-32.eu/laravel/public/
+# Copier le contenu de dist/ dans backend/public/
+scp -r dist/* asconsulting@ns3485498.ip-193-70-32.eu:/home/asconsulting/web/ns3485498.ip-193-70-32.eu/pme-conform/backend/public/
 ```
+
+> `frontend/dist/` est volontairement exclu du dépôt (`.gitignore`) : le build
+> est un artefact, on ne le versionne pas. Il faut donc le régénérer et le
+> copier à chaque mise à jour du front — un `git pull` ne le fera pas.
 
 ## Étape 6 — Configurer Nginx (HestiaCP)
 
-Dans HestiaCP : éditer le domaine, pointer le root vers `laravel/public/`.
+Dans HestiaCP : éditer le domaine, sélectionner **PHP 8.3** (même version que
+les workers), et pointer le document root vers :
+
+```
+/home/asconsulting/web/ns3485498.ip-193-70-32.eu/pme-conform/backend/public
+```
 
 Template Nginx Laravel standard (devrait être détecté auto par HestiaCP). Vérifier que `try_files $uri $uri/ /index.php?$query_string;` est présent.
+
+⚠️ **Cohabitation React / Laravel dans `public/`** : le build React y dépose un
+`index.html` à côté de l'`index.php` de Laravel. C'est la directive `index` de
+Nginx qui tranche. Il faut `index index.html index.php;` pour que la SPA soit
+servie à la racine — les routes `/api/*` continuent d'atteindre Laravel via
+`try_files`, puisqu'aucun fichier statique ne leur correspond.
 
 ## Commandes de maintenance
 
