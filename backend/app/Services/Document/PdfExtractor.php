@@ -129,30 +129,61 @@ class PdfExtractor implements DocumentExtractorInterface
 
         $gs = config('services.ghostscript.path', 'gs');
         $dpi = (int) config('services.ghostscript.dpi', 300);
-        $sortie = $dossierTemp . DIRECTORY_SEPARATOR . 'page-%03d.png';
+        $nbPages = $this->compterPages($cheminFichier);
 
-        // escapeshellarg (et non escapeshellcmd) sur le binaire : sous Windows
-        // le chemin contient un espace ("C:/Program Files/...") qu'il faut
-        // proteger par des guillemets, sinon le shell coupe sur l'espace.
-        $commande = sprintf(
-            '%s -sDEVICE=png16m -r%d -dNOPAUSE -dBATCH -dQUIET -sOutputFile=%s %s',
-            escapeshellarg($gs),
-            $dpi,
-            escapeshellarg($sortie),
-            escapeshellarg($cheminFichier),
-        );
-
-        exec($commande . ' 2>&1', $retour, $codeSortie);
-
-        if ($codeSortie !== 0) {
-            $this->nettoyer($dossierTemp);
-            throw new RuntimeException(
-                "Ghostscript a echoue (code {$codeSortie}) : " . implode(' ', $retour)
-                . '. Verifiez l\'installation de Ghostscript (services.ghostscript.path).',
+        // Rendu PAGE PAR PAGE : on evite un unique -sOutputFile=page-%03d.png,
+        // car sous Windows le "%" du motif est interprete par cmd.exe et une
+        // seule page etait rendue. Ici chaque page a un nom de fichier concret.
+        // escapeshellarg (et non escapeshellcmd) protege le chemin du binaire
+        // qui contient un espace sous Windows ("C:/Program Files/...").
+        for ($page = 1; $page <= $nbPages; $page++) {
+            $sortie = $dossierTemp . DIRECTORY_SEPARATOR . sprintf('page-%03d.png', $page);
+            $commande = sprintf(
+                '%s -sDEVICE=png16m -r%d -dNOPAUSE -dBATCH -dQUIET -dFirstPage=%d -dLastPage=%d -sOutputFile=%s %s',
+                escapeshellarg($gs),
+                $dpi,
+                $page,
+                $page,
+                escapeshellarg($sortie),
+                escapeshellarg($cheminFichier),
             );
+
+            $retour = [];
+            $codeSortie = 0;
+            exec($commande . ' 2>&1', $retour, $codeSortie);
+
+            // Echec sur la 1re page = probleme d'installation -> on stoppe.
+            // Sur une page ulterieure, on loggue et on continue.
+            if ($codeSortie !== 0) {
+                if ($page === 1) {
+                    $this->nettoyer($dossierTemp);
+                    throw new RuntimeException(
+                        "Ghostscript a echoue (code {$codeSortie}) : " . implode(' ', $retour)
+                        . '. Verifiez l\'installation de Ghostscript (services.ghostscript.path).',
+                    );
+                }
+                Log::warning("Ghostscript : page {$page} non rendue ({$cheminFichier}).");
+            }
         }
 
         return $dossierTemp;
+    }
+
+    /**
+     * Compte les pages du PDF via smalot/pdfparser (cross-plateforme).
+     * Retombe sur 1 si le comptage echoue (PDF exotique).
+     */
+    private function compterPages(string $cheminFichier): int
+    {
+        try {
+            $pages = (new Parser())->parseFile($cheminFichier)->getPages();
+
+            return max(1, count($pages));
+        } catch (\Throwable $e) {
+            Log::warning("Comptage de pages PDF echoue ({$cheminFichier}) : " . $e->getMessage());
+
+            return 1;
+        }
     }
 
     /** Supprime le dossier temporaire et son contenu. */
