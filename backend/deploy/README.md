@@ -97,6 +97,7 @@ sudo supervisorctl start pme-conform-analyses:*
 sudo supervisorctl start pme-conform-default:*
 sudo supervisorctl start pme-conform-referentiels:*
 sudo supervisorctl start pme-conform-questionnaires:*
+sudo supervisorctl start pme-conform-documents:*
 
 # Vérifier
 sudo supervisorctl status
@@ -120,8 +121,9 @@ pme-conform-questionnaires:pme-conform-...      RUNNING   pid 12350, uptime 0:00
 | `default` | **2** | 5min | Notifications, exports XLSX, jobs courts |
 | `referentiels` | **1** | 1h | Indexation d'un référentiel (chunks + embeddings + classification thématique LLM) |
 | `questionnaires` | **1** | 30min | Génération LLM des questionnaires DCP par pôle |
+| `documents` | **1** | ~12min | Upload : extraction texte + OCR + embeddings pgvector |
 
-Total : **6 process workers en parallèle**. Avec 62 Go de RAM et la limite memory=2048MB par worker, ça laisse largement la place à Ollama + Nginx + PostgreSQL.
+Total : **7 process workers en parallèle**. Avec 62 Go de RAM et la limite memory=2048MB par worker, ça laisse largement la place à Ollama + Nginx + PostgreSQL.
 
 ## Étape 5 — Front-end React
 
