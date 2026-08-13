@@ -33,22 +33,27 @@ use Pgvector\Laravel\Distance;
 
 class GapAnalysisService
 {
-    // Seuils calibres pour nomic-embed-text (768 dims, modele dedie embeddings).
-    // Les scores de ce modele sur du texte francais juridique sont generalement
-    // plus eleves qu'avec un LLM chat utilise comme embedding -> seuils ajustes.
-    //   - >= 0.50 : conforme (la Convention SUNU sur sous-traitance atteint 0.55-0.70)
-    //   - >= 0.32 : preuve insuffisante (matching pertinent mais incomplet)
-    //   - >= 0.20 : ecart absence_totale (le doc effleure le sujet)
-    //   - <  0.20 : hors perimetre (le doc ne parle pas du sujet)
+    // === Seuils du chemin EMBEDDINGS (pgvector / nomic-embed-text) ===
+    // Mesure empirique du modele : 2 textes PROCHES ~0.75, 2 textes SANS
+    // rapport ~0.53. Le plancher "sans rapport" etant ~0.53, l'ancien seuil
+    // conforme a 0.50 marquait TOUT conforme (0 ecart, 100 %). Recalibrage
+    // nettement au-dessus de ce plancher pour retrouver du pouvoir discriminant.
+    //   - >= 0.70 : conforme
+    //   - >= 0.62 : preuve insuffisante
+    //   - >= 0.55 : ecart absence_totale
+    //   - <  0.55 : hors perimetre
+    private const SEUIL_COSINE_SUFFISANTE = 0.70;
+    private const SEUIL_COSINE_PARTIELLE = 0.62;
+    private const SEUIL_COSINE_HORS_PERIMETRE = 0.55;
+
+    // === Seuils du chemin FULL-TEXT (repli quand pas d'embeddings, ts_rank*10) ===
+    // Echelle de score DIFFERENTE des cosinus -> seuils distincts (ne pas fusionner).
     private const SEUIL_PREUVE_SUFFISANTE = 0.50;
     private const SEUIL_PREUVE_PARTIELLE = 0.32;
     private const SEUIL_HORS_PERIMETRE = 0.20;
 
-    // Seuils plus permissifs pour les Documents miroirs de questionnaire :
-    // sans pgvector, le scoring fulltext est faible (ts_rank * 10), et les
-    // reponses du client utilisent un vocabulaire eloigne des exigences
-    // ARTCI. On baisse les seuils pour eviter que les questionnaires ne
-    // soient systematiquement marques "hors_perimetre".
+    // === Seuils Documents-miroirs de questionnaire (full-text, vocabulaire eloigne) ===
+    // Reponses du client au vocabulaire eloigne des exigences ARTCI -> plus permissif.
     private const SEUIL_QUESTIONNAIRE_SUFFISANTE = 0.30;
     private const SEUIL_QUESTIONNAIRE_PARTIELLE = 0.10;
     private const SEUIL_QUESTIONNAIRE_HORS_PERIMETRE = 0.02;
@@ -424,14 +429,26 @@ class GapAnalysisService
     {
         $preuve = $this->rechercherPreuveDansDocument($exigence, $documentId);
         $score = $preuve['score'] ?? 0;
+        $methode = $preuve['methode'] ?? 'fulltext';
 
-        // Seuils adaptes selon le type de document : les questionnaires
-        // (reponses du client) sont scores plus indulgemment en fulltext car
-        // leur vocabulaire est volontairement different des exigences.
+        // Choix des seuils selon la METHODE de scoring (echelles differentes) :
+        //   - questionnaire : full-text tres permissif (vocabulaire client eloigne)
+        //   - cosine        : embeddings pgvector (scores ~0.53-0.80)
+        //   - fulltext      : repli mots-cles (ts_rank*10)
         $estQuestionnaire = $this->estDocumentQuestionnaire($documentId);
-        $seuilHors = $estQuestionnaire ? self::SEUIL_QUESTIONNAIRE_HORS_PERIMETRE : self::SEUIL_HORS_PERIMETRE;
-        $seuilSuffisante = $estQuestionnaire ? self::SEUIL_QUESTIONNAIRE_SUFFISANTE : self::SEUIL_PREUVE_SUFFISANTE;
-        $seuilPartielle = $estQuestionnaire ? self::SEUIL_QUESTIONNAIRE_PARTIELLE : self::SEUIL_PREUVE_PARTIELLE;
+        if ($estQuestionnaire) {
+            $seuilHors = self::SEUIL_QUESTIONNAIRE_HORS_PERIMETRE;
+            $seuilSuffisante = self::SEUIL_QUESTIONNAIRE_SUFFISANTE;
+            $seuilPartielle = self::SEUIL_QUESTIONNAIRE_PARTIELLE;
+        } elseif ($methode === 'cosine') {
+            $seuilHors = self::SEUIL_COSINE_HORS_PERIMETRE;
+            $seuilSuffisante = self::SEUIL_COSINE_SUFFISANTE;
+            $seuilPartielle = self::SEUIL_COSINE_PARTIELLE;
+        } else {
+            $seuilHors = self::SEUIL_HORS_PERIMETRE;
+            $seuilSuffisante = self::SEUIL_PREUVE_SUFFISANTE;
+            $seuilPartielle = self::SEUIL_PREUVE_PARTIELLE;
+        }
 
         if ($score < $seuilHors) {
             return ['statut' => 'hors_perimetre', 'score' => $score];
@@ -496,6 +513,7 @@ class GapAnalysisService
                         'contenu' => $this->tronquerSurMot($chunk->contenu, 1500),
                         'score' => $this->calculerScoreCosinus($exigence->embedding, $chunk->embedding),
                         'metadata' => is_string($chunk->metadata) ? json_decode($chunk->metadata, true) : $chunk->metadata,
+                        'methode' => 'cosine',
                     ];
                 }
             } catch (\Throwable $e) {
@@ -503,7 +521,14 @@ class GapAnalysisService
             }
         }
 
-        return $this->rechercheFullText($exigence, [$documentId]);
+        // Repli mots-cles : on marque la methode pour que l'appelant applique
+        // les seuils full-text (echelle differente des scores cosinus).
+        $preuve = $this->rechercheFullText($exigence, [$documentId]);
+        if (is_array($preuve)) {
+            $preuve['methode'] = 'fulltext';
+        }
+
+        return $preuve;
     }
 
     /**
