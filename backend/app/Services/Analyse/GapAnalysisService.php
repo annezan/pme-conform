@@ -499,7 +499,18 @@ class GapAnalysisService
 
     private function rechercherPreuveDansDocument(ReferentielChunk $exigence, int $documentId): ?array
     {
-        if ($this->pgvectorChecker->estDisponible() && $exigence->embedding) {
+        // Les questionnaires (reponses du client) sont TOUJOURS scores en full-text.
+        // Leur vocabulaire est trop eloigne des exigences pour la similarite cosinus,
+        // et leurs seuils dedies (0.30...) sont calibres pour l'echelle full-text.
+        // Sans cette exclusion, un questionnaire AVEC embeddings (cas du serveur)
+        // basculait en cosinus : tous les scores (~0.53+) depassaient 0.30 -> tout
+        // "conforme" -> aucun ecart sur les questionnaires (alors qu'en local, sans
+        // embeddings, ils passaient en full-text et remontaient bien des ecarts).
+        $utiliserCosine = $this->pgvectorChecker->estDisponible()
+            && $exigence->embedding
+            && ! $this->estDocumentQuestionnaire($documentId);
+
+        if ($utiliserCosine) {
             try {
                 $chunk = DocumentChunk::query()
                     ->nearestNeighbors('embedding', $exigence->embedding, Distance::Cosine)
