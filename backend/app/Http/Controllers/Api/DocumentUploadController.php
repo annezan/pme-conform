@@ -114,10 +114,12 @@ class DocumentUploadController extends Controller
             // L'extraction sera retentee dans le job
         }
 
-        // Dispatcher le job de traitement (chunking + embeddings).
-        // dispatchAfterResponse : execute le job dans le meme process PHP juste
-        // apres l'envoi de la reponse — pas besoin d'un `php artisan queue:work`.
-        ProcessDocumentJob::dispatchAfterResponse($document);
+        // Dispatcher le job de traitement (extraction + OCR + chunks + embeddings)
+        // dans la FILE d'attente : c'est le worker "documents" (timeout 700 s) qui
+        // l'execute. On evite dispatchAfterResponse, qui tournait dans PHP-FPM et
+        // coupait au bout de ~30-60 s sur les gros PDF scannes (OCR long).
+        // NB : en local, lancer `php artisan queue:work` pour traiter les uploads.
+        ProcessDocumentJob::dispatch($document);
 
         // Audit
         $this->audit->uploadDocument($document);

@@ -276,7 +276,11 @@ class ClientDocumentController extends Controller
             // Sera retente par le job
         }
 
-        ProcessDocumentJob::dispatchAfterResponse($document);
+        // dispatch (file d'attente) et non dispatchAfterResponse : le traitement
+        // (extraction + OCR + embeddings) peut durer plusieurs minutes pour un PDF
+        // scanne. En le mettant dans la file, c'est le worker "documents" (timeout
+        // 700 s) qui l'execute, au lieu de PHP-FPM qui coupe au bout de ~30-60 s.
+        ProcessDocumentJob::dispatch($document);
         $this->audit->uploadDocument($document);
 
         return response()->json([

@@ -477,9 +477,11 @@ class MatriceCollecteController extends Controller
                 'taille_octets' => $fichier->getSize(),
             ]);
 
-            // Indexation asynchrone : meme pipeline que les uploads via /mes-documents
-            // (extraction approfondie, chunks, embeddings -> statut "indexe").
-            ProcessDocumentJob::dispatchAfterResponse($document);
+            // Indexation asynchrone via la FILE d'attente : meme pipeline que les
+            // uploads via /mes-documents (extraction + OCR + chunks + embeddings).
+            // Le worker "documents" (timeout 700 s) l'execute, evitant la coupure
+            // de PHP-FPM sur les PDF scannes (OCR long).
+            ProcessDocumentJob::dispatch($document);
 
             return $newPiece;
         });
