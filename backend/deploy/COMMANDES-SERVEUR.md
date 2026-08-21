@@ -42,6 +42,24 @@ git push origin main
 
 ---
 
+## A-bis. CÔTÉ PC — LANCER UN WORKER EN LOCAL (pour tester uploads / indexation)
+
+**Quand :** dès que tu testes en local un **upload de document**, une **génération de questionnaire**, une **indexation de référentiel** ou une **analyse d'écarts**.
+**Pourquoi :** ces traitements passent par la **file d'attente** (`dispatch`). Sans worker qui tourne, ils restent « en attente » et rien ne se passe (le document reste « en traitement », le référentiel n'a pas de chunks, etc.).
+
+Dans un **terminal séparé** (laisse-le tourner pendant que tu développes) :
+```powershell
+cd C:\Users\pcsof\Documents\DCP\ProjetDCP\backend
+php artisan queue:work --queue=documents,questionnaires,referentiels,analyses,default --timeout=3600
+```
+- `--queue=...` : traite toutes les files (documents, questionnaires, référentiels, analyses, défaut).
+- `--timeout=3600` : laisse jusqu'à 1 h par job (OCR + embeddings + LLM peuvent être longs sur CPU).
+- Pour **vider une seule fois** le retard puis s'arrêter, ajoute `--stop-when-empty`.
+
+Rappel : **sur le serveur, ce worker tourne déjà en permanence** (Supervisor) — cette commande n'est utile qu'**en local**.
+
+---
+
 ## B. CÔTÉ SERVEUR (les sections ci-dessous se lancent dans PuTTY)
 
 ## 0. À COMPRENDRE AVANT TOUT : les deux utilisateurs
