@@ -453,14 +453,10 @@ class MatriceCollecteController extends Controller
                 $document->addMedia($cheminAbsolu)
                     ->preservingOriginal()
                     ->toMediaCollection('fichiers');
-
-                // Extraction immediate du contenu (best-effort)
-                if ($this->extractorFactory->supporte($document->type_mime)) {
-                    $contenu = $this->extractorFactory->extraire($cheminAbsolu, $document->type_mime);
-                    $document->update(['contenu_extrait' => $contenu]);
-                }
+                // PAS d'extraction synchrone : l'OCR (plusieurs minutes) bloquerait
+                // la reponse HTTP. Le job l'execute dans le worker.
             } catch (\Throwable $e) {
-                Log::warning("MatriceCollecte: extraction/media echouee pour Document {$document->id}", [
+                Log::warning("MatriceCollecte: attachement media echoue pour Document {$document->id}", [
                     'error' => $e->getMessage(),
                 ]);
             }

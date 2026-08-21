@@ -103,16 +103,8 @@ class DocumentUploadController extends Controller
         // Attacher le fichier via Spatie Media Library
         $document->addMedia($fichier)->toMediaCollection('fichiers');
 
-        // Tenter l'extraction de texte immediatement
-        try {
-            $media = $document->getFirstMedia('fichiers');
-            if ($media && $this->extractorFactory->supporte($document->type_mime)) {
-                $contenu = $this->extractorFactory->extraire($media->getPath(), $document->type_mime);
-                $document->update(['contenu_extrait' => $contenu]);
-            }
-        } catch (\Throwable $e) {
-            // L'extraction sera retentee dans le job
-        }
+        // PAS d'extraction synchrone ici : l'OCR d'un PDF scanne (plusieurs minutes)
+        // bloquerait la reponse HTTP. Le job l'execute dans le worker.
 
         // Dispatcher le job de traitement (extraction + OCR + chunks + embeddings)
         // dans la FILE d'attente : c'est le worker "documents" (timeout 700 s) qui

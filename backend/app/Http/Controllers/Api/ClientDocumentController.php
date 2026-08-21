@@ -265,16 +265,9 @@ class ClientDocumentController extends Controller
 
         $document->addMedia($fichier)->toMediaCollection('fichiers');
 
-        // Extraction immediate du texte si possible
-        try {
-            $media = $document->getFirstMedia('fichiers');
-            if ($media && $this->extractorFactory->supporte($document->type_mime)) {
-                $contenu = $this->extractorFactory->extraire($media->getPath(), $document->type_mime);
-                $document->update(['contenu_extrait' => $contenu]);
-            }
-        } catch (\Throwable $e) {
-            // Sera retente par le job
-        }
+        // PAS d'extraction synchrone ici : pour un PDF scanne, l'OCR (plusieurs
+        // minutes) bloquerait la reponse HTTP de l'upload. C'est le job qui extrait
+        // dans le worker (il le fait si contenu_extrait est vide).
 
         // dispatch (file d'attente) et non dispatchAfterResponse : le traitement
         // (extraction + OCR + embeddings) peut durer plusieurs minutes pour un PDF
