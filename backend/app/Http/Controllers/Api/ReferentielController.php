@@ -485,7 +485,10 @@ class ReferentielController extends Controller
                 // Re-tente dans le job
             }
 
-            IndexReferentielJob::dispatchAfterResponse($referentiel);
+            // File d'attente (worker "referentiels", timeout 3600 s) : l'indexation
+            // (OCR eventuel + embeddings + classification LLM par article) peut durer
+            // plusieurs minutes, ce que PHP-FPM couperait en dispatchAfterResponse.
+            IndexReferentielJob::dispatch($referentiel);
         }
 
         return response()->json(['referentiel' => $referentiel->load('secteursActivite:id,nom,code')], 201);
@@ -596,20 +599,26 @@ class ReferentielController extends Controller
 
     /**
      * Re-indexe un referentiel (re-extraction + re-chunking + re-embedding).
-     * Execution synchrone : la reponse n'est renvoyee qu'une fois les chunks
-     * crees. Sur PHP built-in server, ca bloque le thread le temps de
-     * l'indexation — voulu, pour eviter le faux « tourne a l'infini »
-     * provoque par un job de queue jamais consomme.
+     *
+     * On VIDE contenu_extrait + les chunks avant de relancer : sinon le job
+     * reutilise l'ancien contenu_extrait (ex. une extraction OCR ratee sans
+     * numeros d'articles) au lieu de relire le fichier. C'est ce qui rendait
+     * toute reindexation inutile.
+     *
+     * Traitement en file d'attente (worker "referentiels") : l'indexation est
+     * trop longue pour un mode synchrone (coupure PHP-FPM). Un worker doit
+     * tourner (Supervisor sur le serveur ; `php artisan queue:work` en local).
      */
     public function reindexer(Referentiel $referentiel): JsonResponse
     {
-        IndexReferentielJob::dispatchSync($referentiel);
+        $referentiel->chunks()->delete();
+        $referentiel->update(['contenu_extrait' => null]);
 
-        $chunks = $referentiel->chunks()->count();
+        IndexReferentielJob::dispatch($referentiel);
 
         return response()->json([
-            'message' => "Re-indexation terminee : {$chunks} chunks crees.",
-            'chunks_count' => $chunks,
+            'message' => 'Re-indexation lancee : le referentiel est retraite en arriere-plan (re-extraction du fichier + decoupage + embeddings). Le nombre de chunks se mettra a jour dans un instant.',
+            'queued' => true,
         ]);
     }
 
@@ -671,14 +680,13 @@ class ReferentielController extends Controller
             ], 200);
         }
 
-        // Synchrone : on attend que les chunks soient crees pour pouvoir
-        // confirmer la reussite a l'utilisateur dans la meme reponse HTTP.
-        IndexReferentielJob::dispatchSync($referentiel);
-
-        $chunks = $referentiel->chunks()->count();
+        // File d'attente (worker "referentiels") : l'indexation (embeddings +
+        // classification LLM) est trop longue pour du synchrone (coupure PHP-FPM).
+        // Le fichier et le texte extrait sont deja enregistres ci-dessus.
+        IndexReferentielJob::dispatch($referentiel);
 
         return response()->json([
-            'message' => 'Fichier uploade (' . strlen($contenu) . " chars extraits, {$chunks} chunks indexes).",
+            'message' => 'Fichier uploade (' . strlen($contenu) . ' caracteres extraits). Indexation lancee en arriere-plan.',
             'extraction_vide' => false,
             'referentiel' => $referentiel->fresh(),
         ]);
